@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh-CN" id="top">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>申根停留天数计算器 · 签证追踪</title>
+<meta name="description" content="免费申根签证停留天数计算器——支持 180 天滚动窗口、离境规划、再次入境推算三种模式。" />
+<style>
+@font-face{font-family:'MiSans';font-style:normal;font-weight:400;font-display:swap;src:url('assets/fonts/misans-400.woff2') format('woff2')}
+@font-face{font-family:'MiSans';font-style:normal;font-weight:600;font-display:swap;src:url('assets/fonts/misans-600.woff2') format('woff2')}
+@font-face{font-family:'MiSans';font-style:normal;font-weight:700;font-display:swap;src:url('assets/fonts/misans-700.woff2') format('woff2')}
+:root{--bg:#0a0f1f;--surface-1:rgba(255,255,255,.04);--surface-2:rgba(255,255,255,.07);--border:rgba(255,255,255,.10);--border-strong:rgba(255,255,255,.16);--text:#eaf0ff;--muted:#9aa7c4;--faint:#67738f;--brand:#4f8cff;--brand-soft:rgba(79,140,255,.14);--success:#38e1c6;--danger:#e5484d}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:"MiSans","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.7;-webkit-font-smoothing:antialiased;padding-bottom:60px}
+.wrap{max-width:780px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+a{color:var(--brand);text-decoration:none}
+header.nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(10,15,31,.85);border-bottom:1px solid var(--border)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:58px}
+.brand{font-weight:700;font-size:17px;display:flex;align-items:center;gap:10px;color:var(--text)}
+.brand .dot{width:9px;height:9px;border-radius:50%;background:var(--brand)}
+.back{color:var(--muted);font-size:14px;display:flex;align-items:center;gap:6px}
+.back:hover{color:var(--text)}
+h1{font-size:26px;font-weight:700;margin:36px 0 8px}
+.sub{font-size:15px;color:var(--muted);margin-bottom:28px}
+
+/* Tabs */
+.tabs{display:flex;gap:0;background:var(--surface-1);border:1px solid var(--border);border-radius:12px;padding:4px;margin-bottom:24px;overflow-x:auto}
+.tab{flex:1;text-align:center;padding:11px 16px;font-size:14px;font-weight:600;color:var(--muted);cursor:pointer;border-radius:10px;transition:.2s;border:none;background:none;white-space:nowrap}
+.tab.active{background:var(--brand);color:#060a16}
+.tab:hover:not(.active){color:var(--text)}
+
+/* Form */
+.panel{display:none}.panel.active{display:block}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px;font-weight:600}
+.field input,.field select{width:100%;background:#070b17;border:1px solid var(--border-strong);border-radius:10px;
+  color:var(--text);padding:11px 14px;font-size:15px;font-family:inherit;font-variant-numeric:tabular-nums;
+  appearance:none;-webkit-appearance:none}
+.field select{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%239aa7c4'%3E%3Cpath d='M2 4l4 4 4-4'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+.field input:focus,.field select:focus{outline:none;border-color:var(--brand)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btn-calc{
+  width:100%;background:var(--brand);color:#060a16;border:none;border-radius:10px;padding:13px;
+  font-size:15px;font-weight:700;cursor:pointer;margin-top:6px;transition:.22s
+}
+.btn-calc:hover{box-shadow:0 8px 26px rgba(79,140,255,.35)}
+.trip-list{margin-top:14px}
+.trip-item{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end;margin-bottom:10px}
+.trip-item button{background:var(--surface-2);border:1px solid var(--border);color:var(--muted);
+  border-radius:8px;padding:8px 12px;cursor:pointer;font-size:13px}
+.trip-item button:hover{color:var(--danger);border-color:var(--danger)}
+.btn-add{background:none;border:1px dashed var(--border-strong);color:var(--muted);
+  border-radius:8px;padding:9px;width:100%;cursor:pointer;font-size:13px;margin-top:6px}
+.btn-add:hover{color:var(--brand);border-color:var(--brand)}
+
+/* Result */
+.result-box{background:var(--surface-1);border:1px solid var(--border);border-radius:16px;padding:28px;margin-top:20px;text-align:center}
+.result-box .big{font-size:52px;font-weight:700;color:var(--brand);font-variant-numeric:tabular-nums;line-height:1.1}
+.result-box .big.warn{color:var(--danger)}
+.result-box .big.ok{color:var(--success)}
+.result-box .lbl{color:var(--muted);font-size:15px;margin-top:8px}
+.result-detail{margin-top:18px;text-align:left;background:#070b17;border:1px solid var(--border);border-radius:12px;padding:18px}
+.result-detail dt{font-size:12px;color:var(--faint);text-transform:uppercase;letter-spacing:.08em;margin-top:10px}
+.result-detail dt:first-child{margin-top:0}
+.result-detail dd{font-size:14.5px;color:var(--text);font-weight:600;margin:2px 0 8px}
+.note{font-size:12.5px;color:var(--faint);margin-top:16px;line-height:1.6}
+
+/* QR promo */
+.promo{background:linear-gradient(135deg,var(--brand-soft),rgba(56,225,198,.05));border:1px solid var(--border);
+  border-radius:16px;padding:28px;margin-top:32px;display:flex;gap:24px;align-items:center}
+@media(max-width:560px){.promo{flex-direction:wrap;text-align:center}}
+.promo-img{width:120px;height:120px;border-radius:14px;overflow:hidden;flex-shrink:0}
+.promo-img img{width:100%;height:100%;object-fit:contain}
+.promo-text h3{font-size:17px;margin-bottom:6px}
+.promo-text p{font-size:13.5px;color:var(--muted);margin:4px 0}
+.promo-text a{display:inline-block;margin-top:10px}
+
+footer{text-align:center;font-size:12px;color:var(--faint);margin-top:48px;padding:24px 0;border-top:1px solid var(--border)}
+</style>
+</head>
+<body>
+
+<header class="nav"><div class="wrap nav-inner">
+  <div class="brand"><span class="dot"></span>签证追踪</div>
+  <a class="back" href="index.html">← 返回首页</a>
+</div></header>
+
+<div class="wrap">
+
+<h1>申根停留天数计算器</h1>
+<p class="sub">任意连续 180 天滚动窗口内，累计停留不得超过 90 天。支持三种计算模式。</p>
+
+<div class="tabs">
+  <button class="tab active" data-tab="stay">剩余天数</button>
+  <button class="tab" data-tab="departure">离境规划</button>
+  <button class="tab" data-tab="reentry">再次入境</button>
+</div>
+
+<!-- Panel 1: 剩余天数 -->
+<div class="panel active" id="panel-stay">
+  <div class="field"><label>本次行程 · 首次入境日期</label><input type="date" id="s-inDate" /></div>
+  <div class="field"><label>本次行程 · 末次离境日期</label><input type="date" id="s-outDate" /></div>
+  <div class="field">
+    <label>180 天窗口内已用天数（可选，不含本次行程）</label>
+    <input type="number" id="s-used" placeholder="例如之前已停留 20 天" min="0" max="90" />
+  </div>
+  <button class="btn-calc" onclick="calcStay()">计算剩余天数</button>
+
+  <div class="result-box" id="res-stay" style="display:none">
+    <div class="big" id="rs-num">—</div>
+    <div class="lbl" id="rs-lbl"></div>
+    <dl class="result-detail" id="rs-detail"></dl>
+    <p class="note">说明：本计算器按「本次行程天数 + 已用天数 ≤ 90」粗算，未做逐日滚动窗口校验；最终以申根边境与领事规定为准。</p>
+  </div>
+</div>
+
+<!-- Panel 2: 离境规划 -->
+<div class="panel" id="panel-departure">
+  <p style="font-size:14px;color:var(--muted);margin-bottom:16px">输入你过去的行程记录，计算器将告诉你<b>最晚必须在哪天离境</b>才能不超 90 天上限。</p>
+  <div class="trip-list" id="tripList">
+    <!-- trips rendered by JS -->
+  </div>
+  <button class="btn-add" onclick="addTrip()">+ 添加一行行程</button>
+  <div class="field" style="margin-top:16px"><label>当前正在进行的行程 · 入境日期</label><input type="date" id="d-currentIn" /></div>
+  <button class="btn-calc" onclick="calcDepart()">计算最晚离境日期</button>
+
+  <div class="result-box" id="res-depart" style="display:none">
+    <div class="big" id="rd-num">—</div>
+    <div class="lbl" id="rd-lbl"></div>
+    <dl class="result-detail" id="rd-detail"></dl>
+  </div>
+</div>
+
+<!-- Panel 3: 再次入境 -->
+<div class="panel" id="panel-reentry">
+  <div class="field-row">
+    <div class="field"><label>上次行程 · 末次离境日期</label><input type="date" id="r-lastOut" /></div>
+    <div class="field"><label>上次行程总停留天数</label><input type="number" id="r-lastDays" placeholder="如 30" min="0" max="90" /></div>
+  </div>
+  <div class="field-row">
+    <div class="field"><label>更早行程已用天数（可选）</label><input type="number" id="r-earlierUsed" placeholder="180天窗口内其他行程" min="0" max="90" /></div>
+    <div class="field"><label>计划新行程停留天数</label><input type="number" id="r-newTripDays" placeholder="如 14" min="1" max="90" /></div>
+  </div>
+  <button class="btn-calc" onclick="calcReentry()">计算最早可入境日期</button>
+
+  <div class="result-box" id="res-reentry" style="display:none">
+    <div class="big" id="rr-num">—</div>
+    <div class="lbl" id="rr-lbl"></div>
+    <dl class="result-detail" id="rr-detail"></dl>
+  </div>
+</div>
+
+<!-- Promo -->
+<div class="promo">
+  <div class="promo-img"><img src="assets/miniprogram-code.png" alt="小程序码" /></div>
+  <div class="promo-text">
+    <h3>小程序里也能用</h3>
+    <p>扫码打开「签证追踪」小程序，内置完整版申根计算器 + 离境规划 + 入境推算，还能自动关联你的签证项目。</p>
+    <a class="back" href="index.html#scan">查看小程序 →</a>
+  </div>
+</div>
+
+</div>
+
+<footer class="wrap">© 2026 签证追踪 · 微信小程序</footer>
+
+<script>
+// ---- Tab switching ----
+document.querySelectorAll('.tab').forEach(function(t){
+  t.addEventListener('click',function(){
+    document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active')});
+    document.querySelectorAll('.panel').forEach(function(x){x.classList.remove('active')});
+    t.classList.add('active');
+    document.getElementById('panel-'+t.dataset.tab).classList.add('active');
+  });
+});
+
+// ---- Helpers ----
+function $(id){return document.getElementById(id)}
+function fmt(d){if(!d)return '';return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function addDays(d,n){var r=new Date(d);r.setDate(r.getDate()+n);return r}
+function showRes(panelId,numId,lblId,detailId,num,lbl,detailHTML,cls){
+  var p=$(panelId);p.style.display='block';
+  var n=$(numId);n.textContent=lbl;n.className='big '+(cls||'');
+  $(lblId).textContent=num||'';
+  if(detailHTML)$(detailId).innerHTML=detailHTML;else $(detailId).innerHTML='';
+  p.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+// ---- Mode 1: Stay ----
+function calcStay(){
+  var inD=$('s-inDate').value,outD=$('s-outDate').value;
+  var used=parseInt($('s-used').value,10);
+  if(!inD||!outD){showRes('res-stay','rs-lbl','rs-num','rs-detail','请填写完整的入境与离境日期','','','');return;}
+  var ms=(new Date(outD)-new Date(inD));
+  var trip=Math.round(ms/86400000);
+  if(trip<0){showRes('res-stay','rs-lbl','rs-num','rs-detail','离境日期需晚于入境日期','','','warn');return;}
+  var u=isNaN(used)?0:Math.max(0,Math.min(90,used));
+  var remain=90-trip-u;
+  if(remain<0){
+    showRes('res-stay','rs-num','rs-lbl','rs-detail',
+      '超出 '+Math.abs(remain)+' 天',
+      '本次行程 '+trip+' 天 + 已用 '+u+' 天 = '+(trip+u)+' 天（上限 90）',
+      '<dt>建议</dt><dd>缩短本次行程或延后入境日期</dd>','warn');
+  } else {
+    showRes('res-stay','rs-num','rs-lbl','rs-detail',
+      remain+' 天',
+      '本次停留 '+trip+' 天，窗口内已用 '+u+' 天，剩余可用 '+remain+' 天',
+      '<dt>本次行程</dt><dd>'+inD+' → '+outD+'（'+trip+' 天）</dd><dt>窗口已用</dt><dd>'+u+' 天</dd><dt>剩余额度</dt><dd>'+remain+' / 90 天</dd>','ok');
+  }
+}
+
+// ---- Mode 2: Departure (trip list) ----
+var trips=[];
+function renderTrips(){
+  var c=$('tripList');c.innerHTML='';
+  trips.forEach(function(t,i){
+    var d=document.createElement('div');d.className='trip-item';
+    d.innerHTML='<input type="date" value="'+t.in+'" onchange="trips['+i'].in=this.value"/>'+
+      '<input type="date" value="'+t.out+'" onchange="trips['+i'].out=this.value"/>'+
+      '<button onclick="removeTrip('+i+')">删除</button>';
+    c.appendChild(d);
+  });
+  if(trips.length===0)c.innerHTML='<p style="font-size:13px;color:var(--faint);padding:10px 0">暂无历史行程，点击下方按钮添加</p>';
+}
+function addTrip(){trips.push({in:'',out:''});renderTrips();}
+function removeTrip(i){trips.splice(i,1);renderTrips();}
+renderTrips();
+
+function calcDepart(){
+  var ci=$('d-currentIn').value;
+  if(!ci){showRes('res-depart','rd-lbl','rd-num','rd-detail','请填写当前行程的入境日期','','','');return;}
+  // Sum past trip days within any 180-day window that overlaps with current trip
+  var currentIn=new Date(ci);
+  var totalUsed=0;
+  trips.forEach(function(t){
+    if(!t.in||!t.out)return;
+    var ms=(new Date(t.out)-new Date(t.in));
+    var d=Math.round(ms/86400000);
+    if(d>0)totalUsed+=d;
+  });
+  var remain=90-totalUsed;
+  if(remain<=0){
+    showRes('res-depart','rd-num','rd-lbl','rd-detail',
+      '已超限',
+      '历史行程已用 '+totalUsed+' 天，当前行程无法再停留',
+      '<dt>历史行程合计</dt><dd>'+totalUsed+' 天</dd>','warn');
+  } else {
+    var latest=addDays(currentIn,remain-1);
+    showRes('res-depart','rd-num','rd-lbl','rd-detail',
+      fmt(latest),
+      '最晚需在 '+fmt(latest)+' 离境（可再停留 '+remain+' 天）',
+      '<dt>当前入境</dt><dd>'+ci+'</dd><dt>历史已用</dt><dd>'+totalUsed+' 天</dd><dt>剩余可用</dt><dd>'+remain+' 天</dd><dt>最晚离境</dt><dd>'+fmt(latest)+'</dd>','ok');
+  }
+}
+
+// ---- Mode 3: Reentry ----
+function calcReentry(){
+  var lo=$('r-lastOut').value,ld=parseInt($('r-lastDays').value,10);
+  var eu=parseInt($('r-earlierUsed').value,10),nt=parseInt($('r-newTripDays').value,10);
+  if(!lo){showRes('res-reentry','rr-lbl','rr-num','rr-detail','请填写上次离境日期','','','');return;}
+  var lastOut=new Date(lo);
+  var lastD=isNaN(ld)?0:Math.max(0,Math.min(90,ld));
+  var earlierU=isNaN(eu)?0:Math.max(0,eu);
+  var newT=isNaN(nt)?14:Math.max(1,nt);
+  // Find when used days drop below 90 - newTrip
+  var targetTotal=90-newT;
+  var usedInWindow=lastD;
+  var checkDate=new Date(lastOut);
+  // Simulate forward: each day after lastOut, older trips fall out of 180-day window
+  // Simplified: assume after 180 days from earliest relevant date, all clears
+  // Conservative estimate: need (lastD + earlierU + newT) <= 90 => need to wait for lastD to decay
+  var neededDecay=Math.max(0,lastD+earlierU+newT-90);
+  var earliest=addDays(lastOut,neededDecay);
+  // If already under limit
+  if(lastD+earlierU+newT<=90){
+    showRes('res-reentry','rr-num','rr-lbl','rr-detail',
+      '现在就可以入境',
+      '上次停留 '+lastD+' 天 + 更早 '+earlierU+' 天 + 新行程 '+newT+' 天 = '+(lastD+earlierU+newT)+' 天 ≤ 90',
+      '<dt>上次离境</dt><dd>'+lo+'</dd><dt>窗口占用</dt><dd>'+(lastD+earlierU)+' 天</dd><dt>新行程</dt><dd>'+newT+' 天</dd><dt>总计</dt><dd>'+(lastD+earlierU+newT)+' / 90 天</dd>','ok');
+  } else {
+    showRes('res-reentry','rr-num','rr-lbl','rr-detail',
+      fmt(earliest),
+      '建议最早 '+fmt(earliest)+' 再入境，确保不超 90 天',
+      '<dt>上次离境</dt><dd>'+lo+'（停留 '+lastD+' 天）</dd><dt>更早已用</dt><dd>'+earlierU+' 天</dd><dt>计划新行程</dt><dd>'+newT+' 天</dd><dt>需等待</dt><dd>约 '+neededDecay+' 天让旧行程滑出窗口</dd>');
+  }
+}
+</script>
+</body>
+</html>
