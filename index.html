@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="zh-CN" id="top">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>签证追踪 · 微信小程序，把签证进度记成一条时间线 | 免费</title>
+<meta name="description" content="签证追踪是一款微信小程序：把递签、录指纹、补材料、下签每一步记成清晰时间线，关键截止日微信提醒，附社区真实下签时长参考与申根天数计算器。永久免费、无广告，不用注册、不用下 App。" />
+<meta name="keywords" content="签证进度追踪,签证时间线,签证下签,申根签证计算器,英国学生签,美国签证B1B2,澳洲学签,加拿大学签,签证材料清单,签证提醒,微信小程序" />
+<meta name="renderer" content="webkit" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="canonical" href="https://David-cell.github.io/visa-tracker-web/" />
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="签证追踪 · 把每一次递签下签记成时间线" />
+<meta property="og:description" content="微信小程序：追踪签证节点、材料清单、审批时长，社区真实案例参考，关键截止日微信提醒。永久免费、无广告，扫码即用。" />
+<meta property="og:locale" content="zh_CN" />
+<!-- 百度搜索建议标签 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="mobile-agent" content="format=html5; url=https://David-cell.github.io/visa-tracker-web/" />
+  <style>
+  /* MiSans（子集化自托管，零外部依赖，font-display:swap 不阻塞渲染） */
+  @font-face{font-family:'MiSans';font-style:normal;font-weight:400;font-display:swap;src:url('assets/fonts/misans-400.woff2') format('woff2')}
+  @font-face{font-family:'MiSans';font-style:normal;font-weight:600;font-display:swap;src:url('assets/fonts/misans-600.woff2') format('woff2')}
+  @font-face{font-family:'MiSans';font-style:normal;font-weight:700;font-display:swap;src:url('assets/fonts/misans-700.woff2') format('woff2')}
+  :root{
+    --bg:#0a0f1f;
+    --surface-1:rgba(255,255,255,.04);
+    --surface-2:rgba(255,255,255,.07);
+    --border:rgba(255,255,255,.10);
+    --border-strong:rgba(255,255,255,.16);
+    --text:#eaf0ff;
+    --muted:#9aa7c4;
+    --faint:#67738f;
+    --brand:#4f8cff;
+    --brand-soft:rgba(79,140,255,.14);
+    --success:#38e1c6;
+    --gold:#e9c46a;
+    --font-serif:"MiSans","PingFang SC","Microsoft YaHei","Hiragino Sans GB",sans-serif;
+    --font-sans:"MiSans","PingFang SC","Microsoft YaHei","Hiragino Sans GB",sans-serif;
+    --maxw:1080px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--font-sans);
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+    position:relative;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:
+      radial-gradient(1200px 600px at 50% -10%, rgba(79,140,255,.10), transparent 60%),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/></svg>");
+  }
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;position:relative;z-index:1}
+  section{padding:132px 0}
+  section:first-of-type{padding-top:108px}
+  h1,h2,h3{font-family:var(--font-serif);font-weight:700;letter-spacing:.01em;line-height:1.25}
+  .eyebrow{
+    display:inline-block;font-size:13px;letter-spacing:.22em;color:var(--brand);
+    text-transform:uppercase;font-family:var(--font-sans);font-weight:600;margin-bottom:16px;
+  }
+  .lead{color:var(--muted);font-size:16px;max-width:60ch}
+  a{color:var(--brand);text-decoration:none}
+
+  /* ---------- 导航 ---------- */
+  header.nav{
+    position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);
+    background:rgba(10,15,31,.72);border-bottom:1px solid var(--border);
+  }
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:62px}
+  .brand{font-family:var(--font-serif);font-weight:700;font-size:19px;display:flex;align-items:center;gap:10px}
+  .brand .dot{width:9px;height:9px;border-radius:50%;background:var(--brand);box-shadow:0 0 14px var(--brand)}
+  .nav-links{display:flex;gap:24px;font-size:14px;color:var(--muted)}
+  .nav-links a{color:var(--muted);transition:color .2s}
+  .nav-links a:hover{color:var(--text)}
+  .nav-cta{
+    border:1px solid var(--border-strong);border-radius:999px;padding:8px 18px;
+    color:var(--text);font-size:14px;transition:.2s;
+  }
+  .nav-cta:hover{background:var(--brand-soft);border-color:var(--brand)}
+  @media(max-width:720px){.nav-links{display:none}}
+
+  /* ---------- Hero ---------- */
+  .hero{padding:96px 0 80px}
+  .hero-grid{display:grid;grid-template-columns:1.15fr .82fr;gap:46px;align-items:center}
+  @media(max-width:820px){.hero-grid{grid-template-columns:1fr;gap:34px;text-align:center}}
+  .hero h1{font-size:clamp(32px,5.2vw,54px);margin-bottom:18px;line-height:1.18}
+  .hero h1 .accent{color:var(--brand)}
+  .hero .lead{margin:0 0 30px;max-width:44ch}
+  @media(max-width:820px){.hero .lead{margin-left:auto;margin-right:auto}}
+  .hero-actions{display:flex;gap:14px;flex-wrap:wrap}
+  @media(max-width:820px){.hero-actions{justify-content:center}}
+  .hero-note{margin-top:18px;font-size:13px;color:var(--faint)}
+  .btn{
+    border-radius:999px;padding:14px 28px;font-size:15px;font-weight:600;cursor:pointer;
+    border:1px solid transparent;transition:.22s;display:inline-flex;align-items:center;gap:8px;
+  }
+  .btn-primary{background:var(--brand);color:#060a16;box-shadow:0 10px 30px rgba(79,140,255,.30)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 16px 40px rgba(79,140,255,.42)}
+  .btn-ghost{border-color:var(--border-strong);color:var(--text)}
+  .btn-ghost:hover{background:var(--surface-2)}
+
+  /* 免费强调横幅 */
+  .free-band{background:linear-gradient(180deg,rgba(79,140,255,.12),rgba(56,225,198,.06));border-bottom:1px solid var(--border)}
+  .free-band .wrap{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;padding:20px 24px;text-align:center}
+  .free-tag{display:inline-flex;align-items:center;gap:8px;background:var(--brand);color:#060a16;font-weight:700;font-size:15px;border-radius:999px;padding:9px 18px;box-shadow:0 8px 22px rgba(79,140,255,.30)}
+  .free-tag .pulse{width:9px;height:9px;border-radius:50%;background:#060a16;box-shadow:0 0 0 0 rgba(6,10,22,.5);animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(6,10,22,.45)}70%{box-shadow:0 0 0 9px rgba(6,10,22,0)}100%{box-shadow:0 0 0 0 rgba(6,10,22,0)}}
+  .free-text{color:var(--text);font-size:15px}
+  .free-text b{color:var(--success)}
+  @media(prefers-reduced-motion:reduce){.free-tag .pulse{animation:none}}
+
+  /* 首屏小程序码 */
+  .hero-code{display:flex;flex-direction:column;align-items:center;gap:14px}
+  .code-slot{width:208px;height:208px;border-radius:18px;background:#fff;display:flex;align-items:center;justify-content:center;
+    position:relative;overflow:hidden;margin:0 auto;box-shadow:0 18px 50px rgba(0,0,0,.45)}
+  .code-slot img{width:100%;height:100%;object-fit:contain}
+  .code-slot .ph{color:#0a0f1f;text-align:center;font-size:13px;padding:14px;line-height:1.5}
+  .code-slot .ph b{display:block;font-size:15px;font-weight:700;margin-bottom:4px}
+  .hero-code p{font-size:13px;color:var(--muted)}
+
+  /* 扫码区二维码 */
+  .scan-code{display:flex;flex-direction:column;align-items:center;gap:14px;margin:28px 0 6px}
+  .scan-code .code-slot{width:220px;height:220px}
+
+  /* ---------- 功能（3 支柱） ---------- */
+  .pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:52px}
+  @media(max-width:760px){.pillars{grid-template-columns:1fr}}
+  .pillar{
+    background:var(--surface-1);border:1px solid var(--border);border-radius:16px;padding:28px 24px;
+    transition:.25s;opacity:0;transform:translateY(16px);
+  }
+  .pillar.in{opacity:1;transform:none;transition:opacity .6s,transform .6s}
+  .pillar:hover{border-color:var(--border-strong);background:var(--surface-2)}
+  .pillar .ico{font-size:26px;margin-bottom:14px;display:block}
+  .pillar h3{font-family:var(--font-sans);font-size:18px;margin-bottom:8px;font-weight:700}
+  .pillar p{color:var(--muted);font-size:14.5px}
+
+  /* ---------- 攻略 ---------- */
+  .guide{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:48px}
+  @media(max-width:720px){.guide{grid-template-columns:1fr}}
+  .guide-card{background:var(--surface-1);border:1px solid var(--border);border-radius:16px;padding:24px;opacity:0;transform:translateY(16px)}
+  .guide-card.in{opacity:1;transform:none;transition:opacity .6s,transform .6s}
+  .guide-card h3{font-family:var(--font-sans);font-size:18px;margin-bottom:6px}
+  .guide-card .tag{display:inline-block;font-size:12px;color:var(--brand);background:var(--brand-soft);
+    padding:3px 10px;border-radius:999px;margin-bottom:12px}
+  .guide-card ul{list-style:none;margin-top:8px}
+  .guide-card li{font-size:14px;color:var(--muted);padding:7px 0 7px 20px;position:relative;border-top:1px solid var(--border)}
+  .guide-card li:first-child{border-top:none}
+  .guide-card li::before{content:"";position:absolute;left:0;top:15px;width:7px;height:7px;border-radius:50%;background:var(--brand)}
+  .guide-card .dur{margin-top:12px;font-size:13px;color:var(--faint)}
+  .guide-card .dur b{color:var(--success);font-variant-numeric:tabular-nums}
+
+  /* ---------- App 演示（横向步骤流） ---------- */
+  .demo{display:flex;align-items:stretch;gap:0;margin-top:48px;flex-wrap:nowrap}
+  @media(max-width:820px){.demo{flex-wrap:wrap;gap:14px}}
+  .demo-step{
+    flex:1;min-width:0;background:var(--surface-1);border:1px solid var(--border);border-radius:16px;
+    padding:24px 18px;text-align:center;position:relative;
+    animation:stepPulse 8s infinite;animation-delay:calc(2s * var(--i,0));
+  }
+  @keyframes stepPulse{
+    0%,16%{border-color:var(--brand);box-shadow:0 0 0 1px var(--brand),0 12px 30px rgba(79,140,255,.28);transform:translateY(-4px);background:var(--surface-2)}
+    22%,100%{border-color:var(--border);box-shadow:none;transform:none;background:var(--surface-1)}
+  }
+  .demo-step .ds-num{width:26px;height:26px;border-radius:50%;background:var(--brand-soft);color:var(--brand);
+    font-size:13px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;margin-bottom:10px}
+  .demo-step .ds-ico{font-size:26px;display:block;margin-bottom:8px}
+  .demo-step .ds-title{font-size:17px;font-weight:700;margin-bottom:4px}
+  .demo-step .ds-desc{font-size:13px;color:var(--muted);min-height:38px}
+  .demo-step .ds-visual{margin-top:16px;height:72px;display:flex;align-items:center;justify-content:center;opacity:.4;
+    animation:dsVis 8s infinite;animation-delay:calc(2s * var(--i,0))}
+  @keyframes dsVis{0%,20%{opacity:1}25%,100%{opacity:.4}}
+  .demo-arrow{display:flex;align-items:center;color:var(--faint);font-size:22px;padding:0 6px;flex:0 0 auto}
+  @media(max-width:820px){.demo-arrow{display:none}.demo-step{flex:1 1 46%}}
+  /* mini 时间线 */
+  .v-timeline{display:flex;align-items:center;gap:0}
+  .tl-dot{width:12px;height:12px;border-radius:50%;background:var(--surface-2);border:2px solid var(--border-strong)}
+  .tl-dot.done{background:var(--success);border-color:var(--success)}
+  .tl-dot.cur{background:var(--brand);border-color:var(--brand);animation:tlPulse 2s infinite}
+  .tl-line{width:26px;height:2px;background:var(--border-strong)}
+  @keyframes tlPulse{0%{box-shadow:0 0 0 0 rgba(79,140,255,.5)}70%{box-shadow:0 0 0 8px rgba(79,140,255,0)}100%{box-shadow:0 0 0 0 rgba(79,140,255,0)}}
+  /* mini 进度环 */
+  .v-ring{position:relative}
+  .ring{width:64px;height:64px;transform:rotate(-90deg)}
+  .ring-bg{fill:none;stroke:var(--border-strong);stroke-width:7}
+  .ring-fg{fill:none;stroke:var(--success);stroke-width:7;stroke-linecap:round;
+    stroke-dasharray:207;stroke-dashoffset:207;animation:ringFill 8s infinite;animation-delay:calc(2s * var(--i,0))}
+  @keyframes ringFill{0%{stroke-dashoffset:207}16%{stroke-dashoffset:0}55%,100%{stroke-dashoffset:0}}
+  .ring-num{position:absolute;font-size:15px;font-weight:700;color:var(--success);font-variant-numeric:tabular-nums}
+  /* 提醒气泡 */
+  .v-alert .bubble{background:var(--brand-soft);border:1px solid var(--brand);color:var(--text);
+    font-size:13px;padding:9px 14px;border-radius:12px 12px 12px 4px;animation:bubblePop 8s infinite;animation-delay:calc(2s * var(--i,0))}
+  @keyframes bubblePop{0%{transform:scale(.6);opacity:0}16%{transform:scale(1);opacity:1}20%,100%{transform:scale(1);opacity:1}}
+  /* 拍照 OCR */
+  .v-photo{position:relative}
+  .v-photo .thumb{width:54px;height:54px;border-radius:10px;background:var(--surface-2);border:1px solid var(--border-strong);
+    display:flex;align-items:center;justify-content:center;font-size:24px}
+  .v-photo .ocr-badge{position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);white-space:nowrap;
+    background:rgba(56,225,198,.14);color:var(--success);font-size:11px;padding:3px 9px;border-radius:999px;border:1px solid var(--success);
+    animation:badgeIn 8s infinite;animation-delay:calc(2s * var(--i,0))}
+  @keyframes badgeIn{0%,16%{opacity:0;transform:translate(-50%,4px)}20%,100%{opacity:1;transform:translate(-50%,0)}}
+
+  /* ---------- 实用工具轻卡片 ---------- */
+  .tool-card{display:flex;align-items:center;gap:16px;margin-top:30px;background:var(--surface-1);
+    border:1px solid var(--border);border-radius:16px;padding:20px 22px;transition:.22s}
+  .tool-card:hover{border-color:var(--brand);background:var(--surface-2)}
+  .tool-ico{font-size:28px}
+  .tool-body{flex:1}
+  .tool-title{font-size:16px;font-weight:700}
+  .tool-sub{font-size:13px;color:var(--muted);margin-top:2px}
+  .tool-go{color:var(--brand);font-weight:600;font-size:14px;white-space:nowrap}
+
+  /* ---------- 案例 ---------- */
+  .cases{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:34px}
+  @media(max-width:820px){.cases{grid-template-columns:1fr}}
+  .case{background:var(--surface-1);border:1px solid var(--border);border-radius:16px;padding:22px;opacity:0;transform:translateY(16px)}
+  .case.in{opacity:1;transform:none;transition:opacity .6s,transform .6s}
+  .case .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px}
+  .case .country{font-family:var(--font-serif);font-size:19px;font-weight:700}
+  .case .badge{font-size:12px;padding:3px 10px;border-radius:999px}
+  .badge.ok{color:var(--success);background:rgba(56,225,198,.12)}
+  .badge.pending{color:var(--gold);background:rgba(233,196,106,.12)}
+  .case .row{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);padding:6px 0;border-top:1px solid var(--border)}
+  .case .row b{color:var(--text);font-variant-numeric:tabular-nums}
+  .case .days{margin-top:12px;font-size:13px;color:var(--faint)}
+
+  /* ---------- 开始步骤 ---------- */
+  .steps-band{margin-top:34px;background:var(--surface-1);border:1px solid var(--border);border-radius:18px;padding:42px 40px;text-align:center}
+  .steps-band h2{font-size:28px;margin-bottom:4px}
+  .steps{list-style:none;counter-reset:s;display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin:22px 0 4px}
+  .steps li{counter-increment:s;color:var(--muted);font-size:15px;padding:10px 0 10px 42px;position:relative;text-align:left;min-width:210px}
+  .steps li::before{content:counter(s);position:absolute;left:0;top:8px;width:26px;height:26px;border-radius:50%;
+    background:var(--brand-soft);color:var(--brand);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center}
+  .steps-band .note{margin-top:14px;font-size:14px;color:var(--muted)}
+
+  /* ---------- FAQ ---------- */
+  .faq{margin-top:34px;max-width:820px}
+  details{border:1px solid var(--border);border-radius:12px;padding:4px 20px;margin-bottom:12px;background:var(--surface-1)}
+  summary{cursor:pointer;padding:16px 0;font-weight:600;font-size:16px;list-style:none;display:flex;justify-content:space-between;align-items:center}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";color:var(--brand);font-size:22px;font-weight:400}
+  details[open] summary::after{content:"\2212"}
+  details p{padding:0 0 18px;color:var(--muted);font-size:14.5px}
+
+  /* ---------- Footer ---------- */
+  footer{border-top:1px solid var(--border);padding:44px 0 56px;color:var(--faint);font-size:13px;text-align:center}
+  footer a{color:var(--muted)}
+  .disclaimer{max-width:760px;margin:16px auto 0;font-size:12px;line-height:1.7;color:var(--faint)}
+
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+    .pillar,.guide-card,.case{opacity:1!important;transform:none!important}
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <div class="brand"><img src="assets/logo.png" alt="签证追踪" style="width:28px;height:28px;border-radius:6px;vertical-align:middle" />签证追踪</div>
+    <nav class="nav-links">
+      <a href="#features">能做什么</a>
+      <a href="calculator.html">天数计算器</a>
+      <a href="#guide">签证攻略</a>
+      <a href="nomad.html">数字游民</a>
+      <a href="#faq">常见问题</a>
+    </nav>
+    <a class="nav-cta" href="#scan">扫码使用</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero wrap">
+  <div class="hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow">微信小程序 · 永久免费 · 无广告</span>
+      <h1>签证到了哪一步<br/><span class="accent">一眼就看懂</span></h1>
+      <p class="lead">把递签、录指纹、补材料、下签记成一条时间线，关键截止日微信提醒。再也不用翻聊天记录猜进度。</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#scan">扫码用小程序</a>
+        <a class="btn btn-ghost" href="calculator.html">算申根天数</a>
+      </div>
+      <p class="hero-note">✓ 全部功能免费 · 无任何广告 · 不用注册、不用下 App，微信里直接用</p>
+    </div>
+    <div class="hero-code">
+      <div class="code-slot">
+        <!-- 替换为你的微信小程序码 PNG：把图片命名为 miniprogram-code.png 放到 assets/ 即可 -->
+        <img src="assets/miniprogram-code.png" alt="微信小程序码" onerror="this.style.display='none';this.parentNode.querySelector('.ph').style.display='block'" />
+        <div class="ph" style="display:none"><b>小程序码占位</b>将小程序码命名为<br/>miniprogram-code.png<br/>放入 assets/ 目录</div>
+      </div>
+      <p>微信「扫一扫」即可打开</p>
+    </div>
+  </div>
+</section>
+
+<!-- FREE BANNER -->
+<div class="free-band">
+  <div class="wrap">
+    <span class="free-tag"><span class="pulse"></span>永久免费</span>
+    <span class="free-text">全部功能<b>免费用</b>，<b>无广告插播</b>、无内购、不用注册，微信里打开就能用。</span>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section id="features" class="wrap">
+  <span class="eyebrow">它能帮你做什么</span>
+  <h2>签证全流程，一处管完</h2>
+  <div class="pillars">
+    <div class="pillar"><span class="ico">🗂️</span><h3>一条时间线</h3><p>每个签证自动排好递交、录指纹、补材料、下签的节点与日期，进度一目了然。</p></div>
+    <div class="pillar"><span class="ico">🔔</span><h3>截止日提醒</h3><p>关键节点前微信订阅消息提醒，不再错过录指纹、补材料的窗口期。</p></div>
+    <div class="pillar"><span class="ico">🌍</span><h3>真实案例参照</h3><p>匿名看他人真实下签时长，给自己的排期一个靠谱的参照。</p></div>
+    <div class="pillar"><span class="ico">📷</span><h3>拍照存档材料</h3><p>直接拍照或选图上传签证材料，本地持久保存，开云后 AI OCR 自动核验识别。</p></div>
+    <div class="pillar"><span class="ico">✈️</span><h3>数字游民专区</h3><p>覆盖 24 国远程工作签证信息，按门槛排序，一键创建 DNV 项目。<a href="nomad.html">查看全部 →</a></p></div>
+    <div class="pillar"><span class="ico">🧮</span><h3>申根计算器</h3><p>180 天滚动窗口停留天数计算，含离境规划与再次入境推算。<a href="calculator.html">打开计算器 →</a></p></div>
+  </div>
+</section>
+
+<!-- APP DEMO -->
+<section id="demo" class="wrap">
+  <span class="eyebrow">App 演示</span>
+  <h2>30 秒看懂签证追踪怎么用</h2>
+  <p class="lead">从新建项目到材料归档，一条时间线替你把签证全流程管明白。</p>
+
+  <div class="demo">
+    <div class="demo-step" style="--i:0">
+      <div class="ds-num">1</div>
+      <div class="ds-ico">🗂️</div>
+      <div class="ds-title">新建项目</div>
+      <div class="ds-desc">选国家与签证类型，时间线自动生成</div>
+      <div class="ds-visual v-timeline">
+        <span class="tl-dot done"></span><span class="tl-line"></span>
+        <span class="tl-dot done"></span><span class="tl-line"></span>
+        <span class="tl-dot cur"></span>
+      </div>
+    </div>
+
+    <div class="demo-arrow">→</div>
+
+    <div class="demo-step" style="--i:1">
+      <div class="ds-num">2</div>
+      <div class="ds-ico">✅</div>
+      <div class="ds-title">打勾材料</div>
+      <div class="ds-desc">清单逐项完成，进度环走到 100%</div>
+      <div class="ds-visual v-ring">
+        <svg viewBox="0 0 80 80" class="ring">
+          <circle class="ring-bg" cx="40" cy="40" r="33"></circle>
+          <circle class="ring-fg" cx="40" cy="40" r="33"></circle>
+        </svg>
+        <span class="ring-num">100%</span>
+      </div>
+    </div>
+
+    <div class="demo-arrow">→</div>
+
+    <div class="demo-step" style="--i:2">
+      <div class="ds-num">3</div>
+      <div class="ds-ico">🔔</div>
+      <div class="ds-title">节点提醒</div>
+      <div class="ds-desc">关键截止日前微信订阅消息提醒</div>
+      <div class="ds-visual v-alert">
+        <div class="bubble">🔔 明天录指纹</div>
+      </div>
+    </div>
+
+    <div class="demo-arrow">→</div>
+
+    <div class="demo-step" style="--i:3">
+      <div class="ds-num">4</div>
+      <div class="ds-ico">📷</div>
+      <div class="ds-title">拍照存档</div>
+      <div class="ds-desc">拍材料图，开云后 AI 自动 OCR 核验</div>
+      <div class="ds-visual v-photo">
+        <div class="thumb">📄</div>
+        <div class="ocr-badge">✓ OCR 已读取</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 实用工具：轻卡片入口 -->
+  <a class="tool-card" href="calculator.html">
+    <div class="tool-ico">🧮</div>
+    <div class="tool-body">
+      <div class="tool-title">申根停留天数计算器</div>
+      <div class="tool-sub">180 天滚动窗口额度估算 · 含离境规划与再次入境推算</div>
+    </div>
+    <div class="tool-go">打开 →</div>
+  </a>
+</section>
+
+<!-- GUIDE -->
+<section id="guide" class="wrap">
+  <span class="eyebrow">签证攻略 · 2026 整理</span>
+  <h2>常见签证的流程与审批时长</h2>
+  <p class="lead">以下为公开信息整理的通用流程与时长参考，实际以各国官方与签证中心最新公布为准。</p>
+  <div class="guide">
+    <div class="guide-card">
+      <span class="tag">英国 · Student Visa</span>
+      <h3>英国学生签</h3>
+      <ul>
+        <li>在线申请 + 支付 IHS 医疗附加费</li>
+        <li>预约签证中心、递交生物信息</li>
+        <li>材料审核（CAS、资金证明、语言）</li>
+        <li>领取签证结果</li>
+      </ul>
+      <div class="dur">常规审批：约 <b>3 周</b>（优先/超级优先服务可缩短）</div>
+    </div>
+    <div class="guide-card">
+      <span class="tag">申根 · Schengen</span>
+      <h3>申根签证</h3>
+      <ul>
+        <li>确定主要停留国并预约</li>
+        <li>准备行程、酒店、保险、银行流水</li>
+        <li>递交材料 + 录指纹（59 个月内可复用）</li>
+        <li>出签后 180 天内累计停留 ≤ 90 天</li>
+      </ul>
+      <div class="dur">常规审批：约 <b>15 个工作日</b></div>
+    </div>
+    <div class="guide-card">
+      <span class="tag">美国 · B1/B2</span>
+      <h3>美国访问签证</h3>
+      <ul>
+        <li>填写 DS-160 表</li>
+        <li>缴纳签证费、预约面签</li>
+        <li>使领馆面签</li>
+        <li>行政审查（如适用）后贴签</li>
+      </ul>
+      <div class="dur">面签后：多为 <b>数日~数周</b>，审查个案差异大</div>
+    </div>
+    <div class="guide-card">
+      <span class="tag">澳洲 · 500 / 加拿大 · 学签</span>
+      <h3>澳加学生签</h3>
+      <ul>
+        <li>取得学校录取（CoE / LOA）</li>
+        <li>在线提交 + 体检 + 无犯罪/资金</li>
+        <li>生物信息采集（加拿大）</li>
+        <li>审理后获签</li>
+      </ul>
+      <div class="dur">澳洲 500：约 <b>4~8 周</b>；加拿大学签：约 <b>4~12 周</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- CASES -->
+<section id="cases" class="wrap">
+  <span class="eyebrow">社区真实案例（匿名）</span>
+  <h2>别人用了多久拿到签证</h2>
+  <p class="lead">来自小程序社区用户的匿名办理时间线，给你一个真实参照。</p>
+  <div class="cases">
+    <div class="case">
+      <div class="top"><span class="country">🇬🇧 英国学生签</span><span class="badge ok">已下签</span></div>
+      <div class="row"><span>递交 → 下签</span><b>21 天</b></div>
+      <div class="row"><span>是否补材料</span><b>否</b></div>
+      <div class="days">时间线：递交 03-12 → 录指纹 03-19 → 下签 04-02</div>
+    </div>
+    <div class="case">
+      <div class="top"><span class="country">🇫🇷 申根（法）</span><span class="badge ok">已下签</span></div>
+      <div class="row"><span>递交 → 下签</span><b>9 个工作日</b></div>
+      <div class="row"><span>停留额度</span><b>90 / 180 天</b></div>
+      <div class="days">时间线：预约 02-01 → 递交 02-10 → 出签 02-21</div>
+    </div>
+    <div class="case">
+      <div class="top"><span class="country">🇺🇸 美国 B1/B2</span><span class="badge pending">审批中</span></div>
+      <div class="row"><span>面签 → 目前</span><b>12 天</b></div>
+      <div class="row"><span>行政审查</span><b>进行中</b></div>
+      <div class="days">时间线：DS-160 → 面签 05-08 → 审查中</div>
+    </div>
+  </div>
+</section>
+
+<!-- STEPS / 小程序码 -->
+<section id="scan" class="wrap">
+  <span class="eyebrow">立即开始</span>
+  <div class="steps-band">
+    <h2>三步开始追踪你的签证</h2>
+    <ol class="steps">
+      <li>微信「扫一扫」扫描下方小程序码</li>
+      <li>进入小程序，微信一键登录</li>
+      <li>新建项目、填节点，时间线自动生成</li>
+    </ol>
+    <div class="scan-code">
+      <div class="code-slot">
+        <img src="assets/miniprogram-code.png" alt="微信小程序码" />
+      </div>
+      <p>微信「扫一扫」即可打开</p>
+    </div>
+    <p class="note">完全免费、无任何广告，没有小程序码？在微信搜索「签证追踪」也能找到（审核通过后）。</p>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" class="wrap">
+  <span class="eyebrow">常见问题</span>
+  <h2>关于签证追踪，你可能想问</h2>
+  <div class="faq">
+    <details open><summary>签证进度怎么追踪？</summary><p>在小程序内为每个签证新建一个项目，按国家与签证类型录入递交、录指纹、补材料、下签等节点日期；小程序会自动按时间排成一条时间线，并在关键截止日前通过微信订阅消息提醒你。</p></details>
+    <details><summary>申根签证停留天数怎么算？</summary><p>申根区采用"任意连续 180 天内累计停留不超过 90 天"的规则。我们的<a href="calculator.html">「申根天数计算器」</a>可帮你快速估算本次行程占用的额度与剩余天数（粗算，非逐日滚动校验）。</p></details>
+    <details open><summary>小程序收费吗？</summary><p><b>完全免费。</b>当前阶段所有核心功能——项目追踪、材料清单、节点提醒、社区案例、天数计算器——全部<b>免费用</b>，<b>没有任何广告插播</b>、没有内购、也不强制注册。我们靠口碑推荐，请放心使用。</p></details>
+    <details><summary>我的签证数据安全吗？</summary><p>签证项目、节点与材料清单默认保存在你的设备本地；社区、反馈等经你主动操作的内容会备份至微信云开发数据库并按权限隔离。我们不在本地上传你的原始照片。</p></details>
+  </div>
+</section>
+
+<footer class="wrap">
+  <div style="display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-bottom:12px;font-size:13px">
+    <a href="about.html">关于我们</a>
+    <a href="privacy.html">隐私政策</a>
+    <a href="terms.html">用户协议</a>
+    <a href="nomad.html">数字游民专区</a>
+  </div>
+  <div>© 2026 签证追踪 · 微信小程序</div>
+  <div class="disclaimer">本页面为产品介绍与公开信息整理，签证政策与审批时长随时变化，社区数据来自用户匿名分享，仅供参考，不构成任何法律、移民或中介服务，不承诺签证结果。因依赖本页面信息产生的任何损失，我们不承担责任。请以各国官方与签证中心最新公布为准。</div>
+</footer>
+
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"WebApplication",
+  "name":"签证进度追踪器",
+  "description":"微信小程序：追踪签证节点、材料清单、审批时长，社区真实案例参考，节点提醒。永久免费、无广告，无需注册。",
+  "applicationCategory":"UtilitiesApplication",
+  "operatingSystem":"WeChat Mini Program",
+  "offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},
+  "inLanguage":"zh-CN"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"FAQPage",
+  "mainEntity":[
+    {"@type":"Question","name":"签证进度怎么追踪？","acceptedAnswer":{"@type":"Answer","text":"在小程序内为每个签证新建项目，录入递交、录指纹、补材料、下签等节点日期，自动排成时间线并在截止日前微信提醒。"}},
+    {"@type":"Question","name":"申根签证停留天数怎么算？","acceptedAnswer":{"@type":"Answer","text":"申根区采用任意连续180天内累计停留不超过90天的规则，可用本页计算器估算本次行程额度与剩余天数。"}},
+    {"@type":"Question","name":"小程序收费吗？","acceptedAnswer":{"@type":"Answer","text":"完全免费。当前阶段所有核心功能（项目追踪、材料清单、节点提醒、社区案例、天数计算器）全部免费用，没有任何广告插播、没有内购、也不强制注册。"}},
+    {"@type":"Question","name":"我的签证数据安全吗？","acceptedAnswer":{"@type":"Answer","text":"签证数据默认保存在设备本地；社区等主动操作内容备份至微信云开发数据库并按权限隔离，不本地上传原始照片。"}}  ]
+}
+</script>
+
+<script>
+  // 滚动渐显
+  (function(){
+    var els = document.querySelectorAll('.pillar,.guide-card,.case');
+    if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in')});return;}
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target);} });
+    },{threshold:.15});
+    els.forEach(function(e){io.observe(e)});
+  })();
+</script>
+</body>
+</html>
