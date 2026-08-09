@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://David-cell.github.io/visa-tracker-web/sitemap.xml
