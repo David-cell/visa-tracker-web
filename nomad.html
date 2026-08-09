@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN" id="top">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>数字游民远程工作签证专区 · 签证追踪</title>
+<meta name="description" content="签证追踪数字游民专区——覆盖 24 国远程工作签证信息，门槛排序、一键创建项目。" />
+<style>
+@font-face{font-family:'MiSans';font-style:normal;font-weight:400;font-display:swap;src:url('assets/fonts/misans-400.woff2') format('woff2')}
+@font-face{font-family:'MiSans';font-style:normal;font-weight:600;font-display:swap;src:url('assets/fonts/misans-600.woff2') format('woff2')}
+@font-face{font-family:'MiSans';font-style:normal;font-weight:700;font-display:swap;src:url('assets/fonts/misans-700.woff2') format('woff2')}
+:root{--bg:#0a0f1f;--surface-1:rgba(255,255,255,.04);--surface-2:rgba(255,255,255,.07);--border:rgba(255,255,255,.10);--border-strong:rgba(255,255,255,.16);--text:#eaf0ff;--muted:#9aa7c4;--faint:#67738f;--brand:#4f8cff;--brand-soft:rgba(79,140,255,.14);--success:#38e1c6;--gold:#e9c46a}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:"MiSans","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.7;-webkit-font-smoothing:antialiased;padding-bottom:60px}
+.wrap{max-width:900px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+a{color:var(--brand);text-decoration:none}
+header.nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(10,15,31,.85);border-bottom:1px solid var(--border)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:58px}
+.brand{font-weight:700;font-size:17px;display:flex;align-items:center;gap:10px;color:var(--text)}
+.brand .dot{width:9px;height:9px;border-radius:50%;background:var(--brand)}
+.back{color:var(--muted);font-size:14px;display:flex;align-items:center;gap:6px}
+.back:hover{color:var(--text)}
+h1{font-size:26px;font-weight:700;margin:36px 0 8px}
+.sub{font-size:15px;color:var(--muted);margin-bottom:28px;max-width:60ch}
+
+/* Region tabs */
+.region-tabs{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap}
+.rtab{padding:8px 18px;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer;
+  border:1px solid var(--border);background:transparent;color:var(--muted);transition:.2s}
+.rtab:hover{color:var(--text);border-color:var(--border-strong)}
+.rtab.active{background:var(--brand);color:#060a16;border-color:var(--brand)}
+
+/* Country cards */
+.country-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:28px}
+.ccard{background:var(--surface-1);border:1px solid var(--border);border-radius:14px;padding:22px;transition:.25s}
+.ccard:hover{border-color:var(--border-strong);background:var(--surface-2)}
+.ccard .flag{font-size:28px;margin-bottom:8px}
+.ccard .cname{font-size:17px;font-weight:700;margin-bottom:4px}
+.ccard .ctype{font-size:13px;color:var(--brand);margin-bottom:10px}
+.crow{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-top:1px solid var(--border)}
+.crow:first-of-type{border-top:none;margin-top:6px}
+.crow .k{color:var(--muted)}
+.crow .v{color:var(--text);font-weight:600}
+.tag-easy{color:var(--success);background:rgba(56,225,198,.10);font-size:11px;padding:2px 8px;border-radius:999px}
+.tag-mid{color:var(--gold);background:rgba(233,196,106,.10);font-size:11px;padding:2px 8px;border-radius:999px}
+.tag-hard{color:var(--muted);background:rgba(103,115,143,.12);font-size:11px;padding:2px 8px;border-radius:999px}
+
+/* Info band */
+.info-band{background:var(--surface-1);border:1px solid var(--border);border-radius:16px;padding:28px;margin:28px 0}
+.info-band h2{font-size:20px;margin-bottom:14px}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-top:16px}
+.info-item h4{font-size:14.5px;font-weight:700;color:var(--text);margin-bottom:4px}
+.info-item p{font-size:13px;color:var(--muted)}
+
+/* CTA */
+.cta{background:linear-gradient(135deg,var(--brand-soft),rgba(56,225,198,.06));border:1px solid var(--border);
+  border-radius:18px;padding:36px;text-align:center;margin:32px 0}
+.cta h2{font-size:22px;margin-bottom:8px}
+.cta p{font-size:14.5px;color:var(--muted);margin-bottom:20px}
+.btn{border-radius:999px;padding:14px 32px;font-size:15px;font-weight:600;cursor:pointer;background:var(--brand);color:#060a16;
+  display:inline-flex;align-items:center;gap:8px;text-decoration:none;transition:.22s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 12px 34px rgba(79,140,255,.35)}
+
+footer{text-align:center;font-size:12px;color:var(--faint);margin-top:48px;padding:24px 0;border-top:1px solid var(--border)}
+.disclaimer{max-width:720px;margin:20px auto 0;font-size:12px;color:var(--faint);line-height:1.7}
+</style>
+</head>
+<body>
+
+<header class="nav"><div class="wrap nav-inner">
+  <div class="brand"><span class="dot"></span>签证追踪</div>
+  <a class="back" href="index.html">← 返回首页</a>
+</div></header>
+
+<div class="wrap">
+
+<h1>🌍 数字游民远程工作签证</h1>
+<p class="sub">覆盖全球 24 个国家/地区的远程工作签证（Digital Nomad Visa）信息。按地区浏览，了解申请门槛、停留时长与收入要求。所有信息整理自 2025–2026 年公开资料，具体以各国移民局最新公布为准。</p>
+
+<div class="region-tabs" id="regionTabs">
+  <button class="rtab active" data-r="all">全部 (24)</button>
+  <button class="rtab" data-r="eu">欧洲 (12)</button>
+  <button class="rtab" data-r="am">美洲 (5)</button>
+  <button class="rtab" data-r="as">亚洲 (4)</button>
+  <button class="rtab"data-r="af">非洲 (2)</button>
+  <button class="rtab" data-r="oc">大洋洲 (1)</button>
+</div>
+
+<div class="country-grid" id="countryGrid">
+<!-- Rendered by JS -->
+</div>
+
+<div class="info-band">
+  <h2>什么是数字游民签证？</h2>
+  <p style="font-size:14.5px;color:var(--muted)">数字游民签证（Digital Nomad Visa, DNV）是一种允许外国公民在签证签发国<b>远程为境外雇主工作</b>或<b>自由职业</b>的居留许可。与传统工作签证不同，DNV 不要求你在当地有雇佣合同——你只需要证明收入来源稳定即可。</p>
+  <div class="info-grid">
+    <div class="info-item"><h4>✅ 谁适合申请</h4><p>远程工作者、自由职业者、创业者、数字内容创作者</p></div>
+    <div class="info-item"><h4>📋 通常需要什么</h4><p>有效护照、健康保险、收入证明（银行流水/合同）、无犯罪证明</p></div>
+    <div class="info-item"><h4>⏱️ 一般停留时长</h4><p>6 个月 ~ 2 年不等，部分可续签或转成长期居留</p></div>
+    <div class="info-item"><h4>💰 收入门槛范围</h4><p>月入 $500 – $4,500+ 因国而异，南欧门槛较低</p></div>
+  </div>
+</div>
+
+<div class="cta">
+  <h2>在小程序里一键创建 DNV 项目</h2>
+  <p>选择目标国家后自动生成标准时间线节点，追踪从准备材料到下签的全流程。</p>
+  <a class="btn" href="index.html#scan">扫码打开小程序 →</a>
+</div>
+
+<p class="disclaimer">本页面信息整理自各国移民局公开资料（2025–2026 年），仅供参考，不构成法律建议。签证政策随时可能变化，请以各国官方最新公布为准。「难度」标签仅基于收入要求与材料复杂度的相对比较。</p>
+
+</div>
+
+<footer class="wrap">© 2026 签证追踪 · 微信小程序</footer>
+
+<script>
+var countries=[
+  {flag:'🇪🇸',name:'西班牙',type:'Nomad Digital Residence',stay:'12 个月（可续 2 年）',income:'€2,160/月',diff:'easy',region:'eu'},
+  {flag:'🇵🇹',name:'葡萄牙',type:'D8 Digital Nomad Visa',stay:'12 个月（可续）',income:'€3,280/月',diff:'easy',region:'eu'},
+  {flag:'🇬🇷',name:'希腊',type:'Digital Nomad Visa',stay:'12 个月',income:'€3,500/月',diff:'mid',region:'eu'},
+  {flag:'🇭🇷',name:'克罗地亚',type:'Digital Nomad Permit',stay:'12 个月',income:'€2,539/月',diff:'easy',region:'eu'},
+  {flag:'🇷🇴',name:'罗马尼亚',type:'Digital Nomad Visa',stay:'最长 2 年',income:'€3,700/月',diff:'mid',region:'eu'},
+  {flag:'🇮🇸',name:'冰岛',type:'Long-term Visa (Remote Work)',stay:'180 天',income:'$7,800+/月',diff:'hard',region:'eu'},
+  {flag:'🇮🇹',name:'意大利',type:'Nomadi Digitali (Remote Work)',stay:'12 个月',income:'€28,000/年',diff:'mid',region:'eu'},
+  {flag:'🇩🇪',name:'德国',type:'Freiberufselserlaubnis (客籍)',stay:'视情况',income:'足够生活',diff:'hard',region:'eu'},
+  {flag:'🇳🇱',name:'荷兰',type:'Digital Nomad (DACT)',stay:'2 年',income:'€4,708/月',diff:'hard',region:'eu'},
+  {flag:'🇪🇪',name:'爱沙尼亚',type:'Digital Nomad Visa',stay:'12 个月',income:'€4,500/月',diff:'mid',region:'eu'},
+  {flag:'🇨🇾',name:'塞浦路斯',type:'Digital Nomad Visa',stay:'12 个月',income:'€3,840/月',diff:'mid',region:'eu'},
+  {flag:'🇲🇹',name:'马耳他',type:'Nomad Residence Permit',stay:'12 个月',income:'€2,900/月',diff:'mid',region:'eu'},
+  {flag:'🇲🇽',name:'墨西哥',type:'Visa Nómada Digital',stay:'6 个月（可续至 1 年）',income:'$2,850/月',diff:'easy',region:'am'},
+  {flag:'🇨🇴',name:'哥伦比亚',type:'Visa V-NOM',stay:'2 年',income:'$900+/月（最低工资 3 倍）',diff:'easy',region:'am'},
+  {flag:'🇧🇷',name:'巴西',type:'Vistos de Nomade Digital',stay:'12 个月（可续）',income:'$1,500/月',diff:'easy',region:'am'},
+  {flag:'🇦🇷',name:'阿根廷',type:'Nómada Digital Visa',stay:'12 个月（可续）',income:'$3,000/月',diff:'mid',region:'am'},
+  {flag:'🇨🇷',name:'哥斯达黎加',type:'Rentista (Remote Work)',stay:'最长 2 年',income:'$3,000–$4,000/月',diff:'mid',region:'am'},
+  {flag:'🇹🇭',name:'泰国',type:'LTR Visa (Digital Nomad)',stay:'5 年',income:'$80,000/年',diff:'mid',region:'as'},
+  {flag:'🇮🇩',name:'印尼',type:'E33G (Digital Nomad)',stay:'待定（2024 推出）',income:'待公布',diff:'mid',region:'as'},
+  {flag:'🇲🇾',name:'马来西亚',type:'DE Rantau (Pass)',stay:'12 个月',income:'$24,000/年（外派）/ $48,000（企业家）',diff:'mid',region:'as'},
+  {flag:'🇺🇦',name:'阿联酋',type:'Virtual Working Programme',stay:'12 个月（可续）',income:'$5,000/月',diff:'hard',region:'as'},
+  {flag:'🇿🇦',name:'南非',type:'Remote Work Visa',stay:'3 年',income:'$3,300/月',diff:'mid',region:'af'},
+  {flag:'🇲🇺',name:'毛里求斯',type:'Premium Remote Work Visa',stay:'12 个月',income:'$1,500/月',diff:'easy',region:'af'},
+  {flag:'🇳🇿',name:'新西兰',type:'Digital Nomad Visa (EEA)',stay:'12 个月',income:'$3,200/月',diff:'mid',region:'oc'}
+];
+
+function diffTag(d){
+  if(d==='easy')return'<span class="tag-easy">门槛低</span>';
+  if(d==='mid')return'<span class="tag-mid">中等</span>';
+  return'<span class="tag-hard">较高</span>';
+}
+function render(r){
+  var g=document.getElementById('countryGrid');
+  var list=r==='all'?countries:countries.filter(function(c){return c.region===r});
+  g.innerHTML=list.map(function(c){
+    return'<div class="ccard">'+
+      '<div class="flag">'+c.flag+'</div>'+
+      '<div class="cname">'+c.name+'</div>'+
+      '<div class="ctype">'+c.type+' '+diffTag(c.diff)+'</div>'+
+      '<div class="crow"><span class="k">停留时长</span><span class="v">'+c.stay+'</span></div>'+
+      '<div class="crow"><span class="k">收入要求</span><span class="v">'+c.income+'</span></div>'+
+    '</div>';
+  }).join('');
+}
+render('all');
+
+document.querySelectorAll('.rtab').forEach(function(t){
+  t.addEventListener('click',function(){
+    document.querySelectorAll('.rtab').forEach(function(x){x.classList.remove('active')});
+    t.classList.add('active');
+    render(t.dataset.r);
+  });
+});
+</script>
+</body>
+</html>
