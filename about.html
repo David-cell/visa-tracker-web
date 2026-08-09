@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN" id="top">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>关于我们 · 签证追踪</title>
+<meta name="description" content="了解签证追踪小程序——一款免费的签证进度管理工具。" />
+<style>
+@font-face{font-family:'MiSans';font-style:normal;font-weight:400;font-display:swap;src:url('assets/fonts/misans-400.woff2') format('woff2')}
+@font-face{font-family:'MiSans';font-style:normal;font-weight:600;font-display:swap;src:url('assets/fonts/misans-600.woff2') format('woff2')}
+@font-face{font-family:'MiSans';font-style:normal;font-weight:700;font-display:swap;src:url('assets/fonts/misans-700.woff2') format('woff2')}
+:root{--bg:#0a0f1f;--surface-1:rgba(255,255,255,.04);--surface-2:rgba(255,255,255,.07);--border:rgba(255,255,255,.10);--border-strong:rgba(255,255,255,.16);--text:#eaf0ff;--muted:#9aa7c4;--faint:#67738f;--brand:#4f8cff;--brand-soft:rgba(79,140,255,.14);--success:#38e1c6}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:"MiSans","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.7;-webkit-font-smoothing:antialiased;padding-bottom:60px}
+.wrap{max-width:800px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+a{color:var(--brand);text-decoration:none}
+header.nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(10,15,31,.85);border-bottom:1px solid var(--border)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:58px}
+.brand{font-weight:700;font-size:17px;display:flex;align-items:center;gap:10px;color:var(--text)}
+.brand .dot{width:9px;height:9px;border-radius:50%;background:var(--brand)}
+.back{color:var(--muted);font-size:14px;display:flex;align-items:center;gap:6px}
+.back:hover{color:var(--text)}
+h1{font-size:28px;font-weight:700;margin:40px 0 20px}
+h2{font-size:20px;font-weight:700;margin:32px 0 12px}
+p,li{font-size:14.5px;color:var(--muted);margin:8px 0}
+ul{padding-left:22px;margin:10px 0}
+li{margin:6px 0}
+.hero-text{margin:30px 0;text-align:center}
+.hero-text h1{margin-bottom:12px}
+.hero-text p.sub{font-size:16px;color:var(--muted);max-width:50ch;margin:0 auto}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin:24px 0}
+@media(max-width:640px){.grid{grid-template-columns:1fr}}
+.card{background:var(--surface-1);border:1px solid var(--border);border-radius:16px;padding:28px 24px;transition:.25s}
+.card:hover{border-color:var(--border-strong);background:var(--surface-2)}
+.card .ico{font-size:28px;margin-bottom:12px;display:block}
+.card h3{font-size:17px;font-weight:700;margin-bottom:8px}
+.card p{font-size:14px}
+.stat-row{display:flex;justify-content:center;gap:40px;margin:36px 0;flex-wrap:wrap}
+.stat{text-align:center}
+.stat .num{font-size:38px;font-weight:700;color:var(--brand);font-variant-numeric:tabular-nums}
+.stat .lbl{font-size:13px;color:var(--faint);margin-top:4px}
+.timeline{background:var(--surface-1);border:1px solid var(--border);border-radius:16px;padding:32px 28px;margin:24px 0}
+.timeline h2{font-size:18px;margin-bottom:20px}
+.tl-item{display:flex;gap:16px;padding:14px 0;border-left:2px solid var(--border-strong);padding-left:24px;position:relative}
+.tl-item::before{content:'';position:absolute;left:-6px;top:20px;width:10px;height:10px;border-radius:50%;background:var(--brand)}
+.tl-item .yr{font-size:13px;color:var(--brand);font-weight:700;white-space:nowrap;min-width:80px}
+.tl-item .desc{font-size:14px;color:var(--muted)}
+.cta-box{background:linear-gradient(135deg,var(--brand-soft),rgba(56,225,198,.06));border:1px solid var(--border);border-radius:18px;padding:40px;text-align:center;margin:32px 0}
+.cta-box h2{font-size:24px;margin-bottom:10px}
+.cta-box p{font-size:15px;color:var(--muted);margin-bottom:24px}
+.btn{border-radius:999px;padding:14px 32px;font-size:15px;font-weight:600;cursor:pointer;background:var(--brand);color:#060a16;display:inline-flex;align-items:center;gap:8px;text-decoration:none;transition:.22s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 12px 34px rgba(79,140,255,.35)}
+footer{text-align:center;font-size:12px;color:var(--faint);margin-top:48px;padding:24px 0;border-top:1px solid var(--border)}
+</style>
+</head>
+<body>
+
+<header class="nav"><div class="wrap nav-inner">
+  <div class="brand"><span class="dot"></span>签证追踪</div>
+  <a class="back" href="index.html">← 返回首页</a>
+</div></header>
+
+<div class="wrap">
+
+<div class="hero-text">
+  <h1>关于签证追踪</h1>
+  <p class="sub">一款真正免费的签证进度管理工具，让每一次递签都不再混乱</p>
+</div>
+
+<div class="stat-row">
+  <div class="stat"><div class="num">34+</div><div class="lbl">覆盖国家/地区</div></div>
+  <div class="stat"><div class="num">5</div><div class="lbl">签证大类</div></div>
+  <div class="stat"><div class="num">100%</div><div class="lbl">核心功能免费</div></div>
+  <div class="stat"><div class="num">0</div><div class="lbl">广告数量</div></div>
+</div>
+
+<h2>我们的使命</h2>
+<p>办过签证的人都知道那种焦虑：递交了材料不知道到哪一步了，补材料的通知差点错过，多个签证的时间线混在一起理不清。<br/><br/>
+签证追踪就是为了解决这个问题而生的——把繁琐的签证申请变成一条清晰的时间线，关键节点提前提醒，让你把精力放在准备材料上而不是记日期。</p>
+
+<h2>核心功能</h2>
+<div class="grid">
+  <div class="card"><span class="ico">🗂️</span><h3>智能时间线</h3><p>新建项目后自动按签证类型生成标准节点（递交→录指纹→补材料→下签），拖动即改日期。</p></div>
+  <div class="card"><span class="ico">📋</span><h3>材料清单</h3><p>每个节点附带对应材料 checklist，拍照存档，支持 AI OCR 自动核验识别。</p></div>
+  <div class="card"><span class="ico">🔔</span><h3>截止日提醒</h3><p>关键节点前微信订阅消息推送，不再错过录指纹、补材料的窗口期。</p></div>
+  <div class="card"><span class="ico">👥</span><h3>同行组协作</h3><p>和一起办签证的朋友建组，共享项目进度，互相提醒重要节点。</p></div>
+  <div class="card"><span class="ico">🌍</span><h3>数字游民专区</h3><p>覆盖 24 国远程工作签证信息，一键创建 DNV 项目，门槛排序一目了然。</p></div>
+  <div class="card"><span class="ico">🧮</span><h3>申根计算器</h3><p>180 天滚动窗口停留天数计算，含离境规划与再次入境推算双模式。</p></div>
+</div>
+
+<div class="timeline">
+  <h2>发展历程</h2>
+  <div class="tl-item"><span class="yr">2026.07</span><span class="desc">项目启动，确定暗色收敛 UI 设计方向，完成 9 个核心页面闭环</span></div>
+  <div class="tl-item"><span class="yr">2026.07</span><span class="desc">接入微信云开发，实现社区时间线与云端数据同步</span></div>
+  <div class="tl-item"><span class="yr">2026.08</span><span class="desc">新增数字游民远程工作签证专区（24 国），拍照存档 + OCR 材料核验上线</span></div>
+  <div class="tl-item"><span class="yr">2026.08</span><span class="desc">提交微信审核，全功能免费期正式开启</span></div>
+</div>
+
+<h2>设计理念</h2>
+<ul>
+  <li><b>隐私优先：</b>数据默认存本地，不上传你的护照、身份证等敏感信息。</li>
+  <li><b>零摩擦：</b>不用注册、不用下载 App，微信里打开就能用。</li>
+  <li><b>克制美学：</b>暗色调收敛界面，减少视觉疲劳，聚焦内容本身。</li>
+  <li><b>离线可用：</b>核心功能无需网络连接，断网也能管理你的签证项目。</li>
+</ul>
+
+<div class="cta-box">
+  <h2>现在就开始</h2>
+  <p>完全免费，无广告，无内购</p>
+  <a class="btn" href="index.html#scan">扫码使用小程序 →</a>
+</div>
+
+</div>
+
+<footer class="wrap">© 2026 签证追踪 · 微信小程序</footer>
+
+</body>
+</html>
