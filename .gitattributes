@@ -1,0 +1,4 @@
+# keep binary assets byte-exact (no CRLF / no diff)
+*.woff2 binary
+*.png binary
+*.svg binary
